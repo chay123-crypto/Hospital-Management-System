@@ -115,3 +115,41 @@ with app.app_context():
         admins=Admin(email_id=email,password=password,admin_name='ADMIN123')
         db.session.add(admins)
         db.session.commit()
+
+class DepartmentResource(Resource):
+    def get(self,dept_name=None):
+        if 'add' in request.path:
+            if session.get('role')=='admin':
+                html=render_template('deptadd.html')
+                return make_response(html,200)
+            else:
+                return redirect("/sign_in")
+            
+        if dept_name:
+            dept=Department.query.filter_by(dept_Name=dept_name).first()
+            if dept:
+                doct_list=[doc for doc in dept.doctors]
+                html=render_template("dept_desc.html",name=dept.dept_Name,ID=dept.dept_id,doctors=doct_list,desc=dept.description,sesson_user_id=session.get("id"))
+                return make_response(html,200)
+            else:
+                flash("No department found","danger")
+                return redirect(url_for("admin"))
+        dept=Department.query.all()
+        html=render_template("deptlist.html",departments=dept,sesson_user_id=session.get("id"))
+        return make_response(html,200)
+    
+    def post(self):
+        deptName=request.form['name']
+        description=request.form['description']
+
+        dept=Department(dept_Name=deptName,description=description)
+
+        db.session.add(dept)
+        db.session.commit()
+
+        return redirect('/departments')
+    
+api.add_resource(DepartmentResource,"/departments","/departments/add","/departments/<string:dept_name>")
+
+if __name__=="__main__":
+    app.run(debug=True)

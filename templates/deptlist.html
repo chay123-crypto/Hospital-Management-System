@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body style="background-color: #e0f0f3">
+    <div class="navbar navbar-expand-md fw-bold" style="background-color:#80c0c9">
+        <a href="#" class="fs-6 navbar-brand ps-5">Hospital Management System</a>
+
+        <button class="navbar-toggler" data-bs-target="#link" data-bs-toggle="collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end pe-10" id="link">
+
+            <ul class="navbar-nav">
+                {% if session['role']=='admin' %}
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link"
+                        href="/appointments/all_appointments">Appointments</a></li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                {% elif session['role']=='patient' %}
+                <li class="pe-3 me-4 nav-item"><a class="nav-link"
+                        href="/dashboard/patient/{{session['id']}}">Dashboard</a></li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/patient_profile/{{session['id']}}">Profile</a>
+                </li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/patient-history/{{session['id']}}">History</a>
+                </li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                {% elif session['role']=='doctor' %}
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/doctor/{{session['id']}}">Dashboard</a>
+                </li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/doctor_profile/{{session['id']}}">Profile</a>
+                </li>
+                <li class="pe-3 me-4 nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <br><br>
+    <div class="card container-md" style="width:800px">
+        <h1 class="text-center">All Departments</h1>
+        <table class="table table-bordered text-center" border="2">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            {% for dept in departments%}
+            <tr>
+                <td>{{dept.dept_id}}</td>
+                <td>{{dept.dept_Name}}</td>
+                <td><a href='departments/{{dept.dept_Name}}' class="btn btn-primary btn-sm m-4">View department</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+
+</html>
